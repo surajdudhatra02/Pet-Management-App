@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+body {
+    font-family: "Headland One", serif;
+}
+
+.swiper-wrapper{
+  margin-bottom: 30px !important;
+}
+
+.swiper-pagination-bullet-active{
+  background-color: #fef3c7 !important;
+
+}
