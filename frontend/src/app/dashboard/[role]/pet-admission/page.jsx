@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 import {
   PawPrint,
   User,
@@ -14,72 +14,103 @@ import {
   X,
   Send,
   Briefcase,
-  Utensils
-} from 'lucide-react';
-const apiURL = import.meta.env.VITE_API_URL 
+  Utensils,
+} from "lucide-react";
+const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
 const PetAdmissionForm = ({ closeForm }) => {
   const [formData, setFormData] = useState({
-    ownerName: '', ownerEmail: '', password: '', address: '',
-    contactNumber: '', whatsappNumber: '',
-    dogName: '', dogAge: '', dogWeight: '',
-    serviceType: 'Training',
-    vaccinationDate: '', admissionDate: '',
-    numberOfDays: '', dietPreference: 'Non Vegetarian',
-    paymentAdvance: '', paymentBalance: '',
-    healthComplaints: 'None',
+    ownerName: "",
+    ownerEmail: "",
+    password: "",
+    address: "",
+    contactNumber: "",
+    whatsappNumber: "",
+    dogName: "",
+    dogAge: "",
+    dogWeight: "",
+    serviceType: "Training",
+    vaccinationDate: "",
+    admissionDate: "",
+    numberOfDays: "",
+    dietPreference: "Non Vegetarian",
+    paymentAdvance: "",
+    paymentBalance: "",
+    healthComplaints: "None",
     agreementSigned: false,
   });
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
-        payment: { advance: formData.paymentAdvance, balance: formData.paymentBalance }
+        payment: {
+          advance: formData.paymentAdvance,
+          balance: formData.paymentBalance,
+        },
       };
       await axios.post(`${apiURL}/api/dashboard/admin/petform`, payload);
-      alert('Pet admission recorded successfully!');
+      alert("Pet admission recorded successfully!");
       closeForm();
     } catch (error) {
-      alert('Error: ' + error.message);
+      alert("Error: " + error.message);
     }
   };
 
   const firstSectionFields = [
-    { label: 'Owner Name', name: 'ownerName', icon: User },
-    { label: 'Owner Email', name: 'ownerEmail', type: 'email', icon: Mail },
-    { label: 'Password', name: 'password', type: 'password', icon: Lock },
-    { label: 'Address', name: 'address', icon: Home },
-    { label: 'Contact Number', name: 'contactNumber', icon: Phone },
-    { label: 'Whatsapp Number', name: 'whatsappNumber', icon: Phone },
-    { label: 'Dog Name', name: 'dogName', icon: PawPrint },
-    { label: 'Dog Age', name: 'dogAge', icon: Calendar },
-    { label: 'Dog Weight', name: 'dogWeight', type: 'number', icon: Weight },
+    { label: "Owner Name", name: "ownerName", icon: User },
+    { label: "Owner Email", name: "ownerEmail", type: "email", icon: Mail },
+    { label: "Password", name: "password", type: "password", icon: Lock },
+    { label: "Address", name: "address", icon: Home },
+    { label: "Contact Number", name: "contactNumber", icon: Phone },
+    { label: "Whatsapp Number", name: "whatsappNumber", icon: Phone },
+    { label: "Dog Name", name: "dogName", icon: PawPrint },
+    { label: "Dog Age", name: "dogAge", icon: Calendar },
+    { label: "Dog Weight", name: "dogWeight", type: "number", icon: Weight },
     {
-      label: 'Service Type', name: 'serviceType', type: 'select', icon: Briefcase,
+      label: "Service Type",
+      name: "serviceType",
+      type: "select",
+      icon: Briefcase,
       options: [
-        { value: 'Training', label: 'Training' },
-        { value: 'Hostel', label: 'Hostel' },
-        { value: 'Both', label: 'Training & Hostel' }
-      ]
+        { value: "Training", label: "Training" },
+        { value: "Hostel", label: "Hostel" },
+        { value: "Both", label: "Training & Hostel" },
+      ],
     },
-    { label: 'Vaccination Date', name: 'vaccinationDate', type: 'date', icon: Calendar },
-    { label: 'Admission Date', name: 'admissionDate', type: 'date', icon: Calendar },
-    { label: 'Number of Days', name: 'numberOfDays', type: 'number', icon: Calendar },
+    {
+      label: "Vaccination Date",
+      name: "vaccinationDate",
+      type: "date",
+      icon: Calendar,
+    },
+    {
+      label: "Admission Date",
+      name: "admissionDate",
+      type: "date",
+      icon: Calendar,
+    },
+    {
+      label: "Number of Days",
+      name: "numberOfDays",
+      type: "number",
+      icon: Calendar,
+    },
   ];
 
   const dietPreferenceField = {
-    label: 'Diet Preference',
-    name: 'dietPreference',
-    type: 'select',
+    label: "Diet Preference",
+    name: "dietPreference",
+    type: "select",
     icon: Utensils,
     options: [
-      { value: 'Vegetarian', label: 'Vegetarian' },
-      { value: 'Non Vegetarian', label: 'Non Vegetarian' }
-    ]
+      { value: "Vegetarian", label: "Vegetarian" },
+      { value: "Non Vegetarian", label: "Non Vegetarian" },
+    ],
   };
 
   return (
@@ -89,7 +120,9 @@ const PetAdmissionForm = ({ closeForm }) => {
         <div className="p-6 bg-gradient-to-r from-amber-500 to-amber-600 border-b border-amber-400 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <PawPrint className="h-8 w-8 text-white" />
-            <h2 className="text-2xl font-bold text-white">Pet Admission Form</h2>
+            <h2 className="text-2xl font-bold text-white">
+              Pet Admission Form
+            </h2>
           </div>
           <button
             onClick={closeForm}
@@ -99,43 +132,50 @@ const PetAdmissionForm = ({ closeForm }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-80px)] bg-gradient-to-b from-amber-50/50 to-white">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 overflow-y-auto max-h-[calc(90vh-80px)] bg-gradient-to-b from-amber-50/50 to-white"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {firstSectionFields.map(({ label, name, type = 'text', icon: Icon, options }) => (
-              <div key={name} className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {label}
-                </label>
-                <div className="relative group">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 group-hover:text-amber-600 transition-colors">
-                    <Icon className="h-4 w-4" />
-                  </div>
+            {firstSectionFields.map(
+              ({ label, name, type = "text", icon: Icon, options }) => (
+                <div key={name} className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {label}
+                  </label>
+                  <div className="relative group">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 group-hover:text-amber-600 transition-colors">
+                      <Icon className="h-4 w-4" />
+                    </div>
 
-                  {type === 'select' ? (
-                    <select
-                      name={name}
-                      value={formData[name]}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white hover:border-amber-300 transition-colors appearance-none"
-                    >
-                      {options.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={type}
-                      name={name}
-                      value={formData[name] || ''}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white hover:border-amber-300 transition-colors"
-                    />
-                  )}
+                    {type === "select" ? (
+                      <select
+                        name={name}
+                        value={formData[name]}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white hover:border-amber-300 transition-colors appearance-none"
+                      >
+                        {options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={type}
+                        name={name}
+                        value={formData[name] || ""}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white hover:border-amber-300 transition-colors"
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
 
             <div key={dietPreferenceField.name} className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -152,8 +192,10 @@ const PetAdmissionForm = ({ closeForm }) => {
                   required
                   className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white hover:border-amber-300 transition-colors appearance-none"
                 >
-                  {dietPreferenceField.options.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
+                  {dietPreferenceField.options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -171,7 +213,7 @@ const PetAdmissionForm = ({ closeForm }) => {
                   <input
                     type="number"
                     name="paymentAdvance"
-                    value={formData.paymentAdvance || ''}
+                    value={formData.paymentAdvance || ""}
                     onChange={handleChange}
                     placeholder="Advance Payment"
                     required
@@ -185,7 +227,7 @@ const PetAdmissionForm = ({ closeForm }) => {
                   <input
                     type="number"
                     name="paymentBalance"
-                    value={formData.paymentBalance || ''}
+                    value={formData.paymentBalance || ""}
                     onChange={handleChange}
                     placeholder="Balance Payment"
                     required
@@ -219,7 +261,12 @@ const PetAdmissionForm = ({ closeForm }) => {
                 type="checkbox"
                 name="agreementSigned"
                 checked={formData.agreementSigned}
-                onChange={(e) => setFormData({ ...formData, agreementSigned: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    agreementSigned: e.target.checked,
+                  })
+                }
                 required
                 className="rounded border-amber-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
               />

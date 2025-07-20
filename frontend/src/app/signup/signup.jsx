@@ -1,6 +1,9 @@
+"use client";
+
 import { useState } from "react";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
   const [fname, setFname] = useState("");
@@ -11,7 +14,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -20,21 +23,29 @@ const Signup = () => {
     setMessage("");
 
     try {
-      const response = await axios.post("/api/auth/signup", {
-        fname,
-        lname,
-        email,
-        password,
-        role,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`,
+        {
+          fname,
+          lname,
+          email,
+          password,
+          role,
+        }
+      );
 
       setMessage(response.data.message);
       const { token } = response.data;
-      localStorage.setItem("token", token);
-      navigate("/login");
 
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", token);
+      }
+
+      router.push("/login");
     } catch (error) {
-      setMessage(error.response?.data?.message || "An error occurred during signup");
+      setMessage(
+        error.response?.data?.message || "An error occurred during signup"
+      );
     } finally {
       setLoading(false);
     }
@@ -49,7 +60,10 @@ const Signup = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <form onSubmit={handleSignup} className="space-y-6">
             <div>
-              <label htmlFor="fname" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="fname"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 First Name
               </label>
               <input
@@ -63,7 +77,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="lname" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="lname"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Last Name
               </label>
               <input
@@ -77,7 +94,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email
               </label>
               <input
@@ -91,7 +111,10 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -104,20 +127,6 @@ const Signup = () => {
               />
             </div>
 
-            {/* <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-                Role
-              </label>
-              <input
-                type="text"
-                id="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300"
-                placeholder="user or admin"
-              />
-            </div> */}
-
             {message && <div className="text-sm text-red-600">{message}</div>}
 
             <button
@@ -128,14 +137,13 @@ const Signup = () => {
               {loading ? "Signing up..." : "Sign Up"}
             </button>
 
-
             <div className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <NavLink to="/login">
-                <button className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
+              <Link href="/login">
+                <span className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
                   Login here
-                </button>
-              </NavLink>
+                </span>
+              </Link>
             </div>
           </form>
         </div>

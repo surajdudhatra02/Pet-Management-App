@@ -1,25 +1,72 @@
-import React, { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import AdminDashboard from './dashboard/AdminDashboard';
-import UserDashboard from './dashboard/UserDashboard';
-import { LogOut, UserRound, Menu, X, PawPrint } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+"use client";
 
-function Dashboard() {
-  const { role: authRole, logout, user } = useAuth();
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { LogOut, UserRound, Menu, X, PawPrint } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import AdminDashboard from "./AdminDashboard";
+import UserDashboard from "./UserDashboard";
+
+const DashboardPage = ({ params }) => {
   const { role: urlRole } = useParams();
+  const {
+    role: authRoleFromContext,
+    logout,
+    isAuthenticated,
+    loading,
+    user,
+  } = useAuth();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [displayRole, setDisplayRole] = useState(authRoleFromContext);
 
-  if (urlRole && urlRole !== authRole) {
-    return <Navigate to={`/dashboard/${authRole}`} replace />;
-  }
+  useEffect(() => {
+    if (loading) return;
 
-  const handleLogout = () => {
-    logout();
-    window.location.href = '/login';
+    if (!isAuthenticated) {
+      router.replace("/login");
+    }
+    return;
+
+    // if (user && authRoleFromContext && displayRole !== authRoleFromContext) {
+    //   setDisplayRole(authRoleFromContext);
+    // }
+
+    // if (urlRole && urlRole !== authRoleFromContext) {
+    //   router.replace(`/dashboard/${authRoleFromContext}`);
+    // }
+  }, [
+    isAuthenticated,
+    router,
+    loading,
+    authRoleFromContext,
+    urlRole,
+    user,
+    displayRole,
+  ]);
+
+  useEffect(() => {
+    if (!loading) {
+      setDisplayRole(authRoleFromContext);
+    }
+  }, [authRoleFromContext, loading]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace("/login");
   };
 
-  const dashboardContent = authRole === 'admin' ? <AdminDashboard /> : <UserDashboard />;
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50/50 to-white">
+        <p className="text-amber-700">Loading dashboard...</p>
+      </div>
+    );
+  }
+  const dashboardContent =
+    authRoleFromContext === "admin" ? <AdminDashboard /> : <UserDashboard />;
+
+  console.log(authRoleFromContext);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
@@ -28,7 +75,9 @@ function Dashboard() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <PawPrint className="h-8 w-8 text-white mr-2" />
-              <h1 className="text-xl font-bold text-white">Dog Training Dashboard</h1>
+              <h1 className="text-xl font-bold text-white">
+                Dog Training Dashboard
+              </h1>
             </div>
 
             {/* Desktop menu */}
@@ -36,7 +85,7 @@ function Dashboard() {
               <div className="flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-full">
                 <UserRound size={20} className="text-white" />
                 <span className="text-sm font-medium text-white capitalize">
-                  {authRole}
+                  {authRoleFromContext}
                 </span>
               </div>
 
@@ -100,6 +149,6 @@ function Dashboard() {
       </div>
     </div>
   );
-}
+};
 
-export default Dashboard;
+export default DashboardPage;

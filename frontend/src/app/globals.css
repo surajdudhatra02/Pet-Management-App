@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Headland One", serif;
+}
+
+.swiper-wrapper {
+  margin-bottom: 30px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #fef3c7 !important;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(45deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(45deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(45deg);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shield } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Shield } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const router = useRouter();
   const { login, isAuthenticated, role } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated && role) {
-      navigate(`/dashboard/${role}`);
+      router.push(`/dashboard/${role}`);
     }
-  }, [isAuthenticated, role, navigate]);
+  }, [isAuthenticated, role, router]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(''); // Clear error when user starts typing
+    setError("");
   };
 
   const validateForm = () => {
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return false;
     }
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return false;
     }
     return true;
@@ -39,18 +38,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const { role } = await login(formData.email, formData.password);
-      navigate(`/dashboard/${role}`);
+      router.push(`/dashboard/${role}`);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -66,7 +63,9 @@ const Login = () => {
                 <Shield className="w-8 h-8 text-blue-600" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold mb-2 text-gray-900">Welcome Back</h2>
+            <h2 className="text-3xl font-bold mb-2 text-gray-900">
+              Welcome Back
+            </h2>
             <div className="h-1 w-16 bg-amber-500 mx-auto rounded-full mb-4"></div>
             <p className="text-gray-600">Login to your account</p>
           </div>
@@ -74,7 +73,10 @@ const Login = () => {
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -90,7 +92,10 @@ const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -106,9 +111,7 @@ const Login = () => {
               </div>
 
               {error && (
-                <div className="text-red-600 text-sm mt-2">
-                  {error}
-                </div>
+                <div className="text-red-600 text-sm mt-2">{error}</div>
               )}
 
               <button
@@ -116,7 +119,7 @@ const Login = () => {
                 className="w-full bg-amber-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-amber-600 transition-colors duration-300 shadow-lg hover:shadow-amber-400/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 disabled={loading}
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {loading ? "Logging in..." : "Login"}
               </button>
             </form>
           </div>
